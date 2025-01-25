@@ -8,8 +8,8 @@ use AneesKhan47\HowLongToBeat\Models\SearchResult;
 
 class HowLongToBeat
 {
-    private const BASE_URL = 'https://howlongtobeat.com/';
-    private array $headers;
+    const BASE_URL = 'https://howlongtobeat.com/';
+    private $headers;
 
     /**
      * Create a new HowLongToBeat instance.
