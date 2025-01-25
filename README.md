@@ -27,7 +27,7 @@ composer require aneeskhan47/php-howlongtobeat-api
 
 #### Search for games by title
 
-by default, it will return 20 results per page and the first page.
+by default, it will return 25 results per page and the first page.
 
 ```php
 require 'vendor/autoload.php';
@@ -52,11 +52,13 @@ try {
 }
 ```
 
-You can also specify the page number and the number of results per page.
+You can also specify the number of results per page. for example, to get second page with 10 results per page, you can do this:
 
 ```php
 $results = $hltb->searchByTitle("The Last of Us", 2, 10);
 ```
+
+Note: The maximum number of results per allowed is 25. This is by HowLongToBeat.com limitation.
 
 #### Search for a single game by its ID
 

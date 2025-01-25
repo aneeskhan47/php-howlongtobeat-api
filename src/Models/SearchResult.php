@@ -10,7 +10,7 @@ class SearchResult
     private int $perPage;
     private int $total;
 
-    public function __construct(array $games = [], int $currentPage = 1, int $perPage = 20, int $total = 0)
+    public function __construct(array $games = [], int $currentPage, int $perPage, int $total)
     {
         $this->games = $games;
         $this->currentPage = $currentPage;

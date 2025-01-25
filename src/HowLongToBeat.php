@@ -11,6 +11,11 @@ class HowLongToBeat
     private const BASE_URL = 'https://howlongtobeat.com/';
     private array $headers;
 
+    /**
+     * Create a new HowLongToBeat instance.
+     *
+     * @return void
+     */
     public function __construct()
     {
         $this->headers = [
@@ -21,6 +26,13 @@ class HowLongToBeat
         ];
     }
 
+    /**
+     * Make a POST request to the API.
+     *
+     * @param string $url
+     * @param array $data
+     * @return array
+     */
     private function post(string $url, array $data): array
     {
         $ch = curl_init($url);
@@ -47,6 +59,12 @@ class HowLongToBeat
         return json_decode($response, true);
     }
 
+    /**
+     * Make a GET request to the API.
+     *
+     * @param string $url
+     * @return string
+     */
     private function get(string $url): string
     {
         $ch = curl_init($url);
@@ -75,12 +93,18 @@ class HowLongToBeat
      * Search for games by title
      *
      * @param string $query
-     * @param int $page
-     * @param int $perPage
-     * @return SearchResult
+     * @param int $page default 1
+     * @param int $perPage default 25
+     * @return \AneesKhan47\HowLongToBeat\Models\SearchResult
+     * 
+     * @throws \AneesKhan47\HowLongToBeat\Exceptions\HowLongToBeatException
      */
-    public function searchByTitle(string $query, int $page = 1, int $perPage = 20): SearchResult
+    public function searchByTitle(string $query, int $page = 1, int $perPage = 25): SearchResult
     {
+        if ($perPage > 25) {
+            throw new HowLongToBeatException("Maximum results per page is 25");
+        }
+
         try {
             $data = $this->post(self::BASE_URL . 'api/s/5b26492381a39f40', [
                 'searchType' => 'games',
@@ -137,8 +161,8 @@ class HowLongToBeat
             return new SearchResult(
                 $games,
                 $page,
-                $perPage,
-                $data['count'] ?? 0
+                25,
+                $data['pageTotal'] ?? 0
             );
         } catch (\Exception $e) {
             throw new HowLongToBeatException("Error searching for games: " . $e->getMessage());
@@ -220,6 +244,12 @@ class HowLongToBeat
         }
     }
 
+    /**
+     * Get the title of a game by its ID.
+     *
+     * @param int $gameId
+     * @return string
+     */
     private function getGameTitle(int $gameId): string
     {
         $html = $this->get(self::BASE_URL . 'game/' . $gameId);
