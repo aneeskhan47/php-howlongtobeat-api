@@ -1,6 +1,7 @@
 <p align="center">
     <img src="https://banners.beyondco.de/HowLongToBeat%20PHP%20API.png?theme=light&packageManager=composer+require&packageName=aneeskhan47%2Fphp-howlongtobeat-api&pattern=architect&style=style_1&description=A+PHP+API+wrapper+for+HowLongToBeat.com&md=1&showWatermark=0&fontSize=100px&images=https%3A%2F%2Fwww.php.net%2Fimages%2Flogos%2Fnew-php-logo.svg" height="300" alt="PHP HowLongToBeat API">
     <p align="center">
+        <a href="https://github.com/aneeskhan47/php-howlongtobeat-api/actions"><img alt="GitHub Workflow Status (master)" src="https://github.com/aneeskhan47/php-howlongtobeat-api/actions/workflows/tests.yml/badge.svg"></a>
         <a href="https://packagist.org/packages/aneeskhan47/php-howlongtobeat-api"><img alt="Total Downloads" src="https://img.shields.io/packagist/dt/aneeskhan47/php-howlongtobeat-api"></a>
         <a href="https://packagist.org/packages/aneeskhan47/php-howlongtobeat-api"><img alt="Latest Version" src="https://img.shields.io/packagist/v/aneeskhan47/php-howlongtobeat-api"></a>
         <a href="https://packagist.org/packages/aneeskhan47/php-howlongtobeat-api"><img alt="License" src="https://img.shields.io/packagist/l/aneeskhan47/php-howlongtobeat-api"></a>
@@ -15,7 +16,7 @@ It is inspired by [ScrappyCocco - HowLongToBeat-PythonAPI](https://github.com/Sc
 
 ## ⚡️ Installation
 
-> **Requires PHP 7.0 or higher**
+> **Requires PHP 7.2 or higher**
 
 ```bash
 composer require aneeskhan47/php-howlongtobeat-api

@@ -159,10 +159,10 @@ class HowLongToBeat
             }, $data['data'] ?? []);
 
             return new SearchResult(
-                $games,
                 $page,
-                25,
-                $data['pageTotal'] ?? 0
+                $perPage,
+                $data['pageTotal'] ?? 0,
+                $games
             );
         } catch (\Exception $e) {
             throw new HowLongToBeatException("Error searching for games: " . $e->getMessage());
