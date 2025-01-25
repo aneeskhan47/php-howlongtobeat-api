@@ -7,7 +7,7 @@
     </p>
 </p>
 
-A simple PHP API to read data from [HowLongToBeat.com](https://howlongtobeat.com).dependencies.
+A simple PHP API to read data from [HowLongToBeat.com](https://howlongtobeat.com).
 
 It is inspired by [ScrappyCocco - HowLongToBeat-PythonAPI](https://github.com/ScrappyCocco/HowLongToBeat-PythonAPI) Python API.
 
