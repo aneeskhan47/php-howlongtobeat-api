@@ -1,0 +1,25 @@
+{
+    "name": "aneeskhan47/php-howlongtobeat-api",
+    "description": "A PHP API wrapper for HowLongToBeat.com",
+    "type": "library",
+    "license": "MIT",
+    "version": "1.0.0",
+    "authors": [
+        {
+            "name": "Anees Khan",
+            "email": "kingkhan2388@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.0",
+        "ext-curl": "*",
+        "ext-json": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "AneesKhan47\\HowLongToBeat\\": "src/"
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
