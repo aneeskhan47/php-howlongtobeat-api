@@ -16,7 +16,7 @@ It is inspired by [ScrappyCocco - HowLongToBeat-PythonAPI](https://github.com/Sc
 
 ## ⚡️ Installation
 
-> **Requires PHP 7.2 or higher**
+> **Requires PHP 7.4 or higher**
 
 ```bash
 composer require aneeskhan47/php-howlongtobeat-api
