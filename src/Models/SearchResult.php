@@ -5,10 +5,10 @@ namespace AneesKhan47\HowLongToBeat\Models;
 class SearchResult
 {
     /** @var Game[] */
-    public array $games;
-    private int $currentPage;
-    private int $perPage;
-    private int $total;
+    public $games;
+    private $currentPage;
+    private $perPage;
+    private $total;
 
     public function __construct(int $currentPage, int $perPage, int $total, array $games = [])
     {
