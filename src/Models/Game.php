@@ -4,13 +4,13 @@ namespace AneesKhan47\HowLongToBeat\Models;
 
 class Game
 {
-    public int $id;
-    public string $name;
-    public ?string $image_url;
-    public ?float $main_story_time;
-    public ?float $main_extra_time;
-    public ?float $completionist_time;
-    public ?float $all_styles_time;
+    public $id;
+    public $name;
+    public $image_url;
+    public $main_story_time;
+    public $main_extra_time;
+    public $completionist_time;
+    public $all_styles_time;
 
     public function __construct(array $data)
     {
