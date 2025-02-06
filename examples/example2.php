@@ -7,7 +7,15 @@ use AneesKhan47\HowLongToBeat\HowLongToBeat;
 $hltb = new HowLongToBeat();
 
 try {
+    $startTime = microtime(true);
+
     $results = $hltb->searchById(10270);
+
+    $endTime = microtime(true);
+    $executionTime = ($endTime - $startTime);
+
+    echo "API Request Time: " . number_format($executionTime, 2) . " seconds\n";
+    echo "------------------------\n";
 
     echo "Game: " . $results->name . "\n";
     echo "Image: " . $results->image_url . "\n";

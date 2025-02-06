@@ -7,7 +7,15 @@ use AneesKhan47\HowLongToBeat\HowLongToBeat;
 $hltb = new HowLongToBeat();
 
 try {
+    $startTime = microtime(true);
+
     $results = $hltb->searchByTitle("The Last of Us");
+
+    $endTime = microtime(true);
+    $executionTime = ($endTime - $startTime);
+
+    echo "API Request Time: " . number_format($executionTime, 2) . " seconds\n";
+    echo "------------------------\n";
 
     foreach ($results->games as $game) {
         echo "Game: " . $game->name . "\n";

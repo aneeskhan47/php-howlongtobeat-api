@@ -10,6 +10,7 @@ class HowLongToBeat
 {
     const BASE_URL = 'https://howlongtobeat.com/';
     private $headers;
+    private $apiEndpoint;
 
     /**
      * Create a new HowLongToBeat instance.
@@ -24,6 +25,42 @@ class HowLongToBeat
             'Accept: */*',
             'Referer: https://howlongtobeat.com/'
         ];
+        $this->apiEndpoint = $this->findApiEndpoint();
+    }
+
+    /**
+     * Find the API endpoint from the main page script
+     *
+     * @return string
+     */
+    private function findApiEndpoint(): string
+    {
+        $html = $this->get(self::BASE_URL);
+
+        // Find all script tags with _app- in their src
+        if (!preg_match_all('/<script[^>]*src=["\']([^"\']*_app-[^"\']*\.js)["\'][^>]*>/i', $html, $matches)) {
+            throw new HowLongToBeatException("Could not find app script");
+        }
+
+        // Get the first matching script
+        $scriptUrl = self::BASE_URL . ltrim($matches[1][0], '/');
+        $scriptContent = $this->get($scriptUrl);
+
+        // Try to find the API key in the format: fetch("/api/s/".concat("X").concat("Y")
+        if (preg_match('/fetch\(\s*["\']\/api\/\w+\/["\']((?:\.concat\(["\'][^"\']*["\']\))+)/', $scriptContent, $matches)) {
+            // Extract the concatenated strings
+            preg_match_all('/\.concat\(["\'](.*?)["\']\)/', $matches[1], $concatMatches);
+            if (!empty($concatMatches[1])) {
+                return implode('', $concatMatches[1]);
+            }
+        }
+
+        // Fallback: try to find the API key in the users.id format
+        if (preg_match('/users\s*:\s*{\s*id\s*:\s*["\']([^"\']+)["\']/', $scriptContent, $matches)) {
+            return $matches[1];
+        }
+
+        throw new HowLongToBeatException("Could not find API endpoint");
     }
 
     /**
@@ -106,7 +143,7 @@ class HowLongToBeat
         }
 
         try {
-            $data = $this->post(self::BASE_URL . 'api/s/5b26492381a39f40', [
+            $data = $this->post(self::BASE_URL . 'api/s/' . $this->apiEndpoint, [
                 'searchType' => 'games',
                 'searchTerms' => explode(' ', $query),
                 'searchPage' => $page,
@@ -184,7 +221,7 @@ class HowLongToBeat
         $gameTitle = $this->getGameTitle($gameId);
 
         try {
-            $data = $this->post(self::BASE_URL . 'api/s/5b26492381a39f40', [
+            $data = $this->post(self::BASE_URL . 'api/s/' . $this->apiEndpoint, [
                 'searchType' => 'games',
                 'searchTerms' => [$gameTitle],
                 'searchPage' => 1,
