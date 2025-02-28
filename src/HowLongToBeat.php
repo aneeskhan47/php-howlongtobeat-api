@@ -11,6 +11,7 @@ class HowLongToBeat
     const BASE_URL = 'https://howlongtobeat.com/';
     private $headers;
     private $apiEndpoint;
+    private $apiPath;
 
     /**
      * Create a new HowLongToBeat instance.
@@ -25,15 +26,19 @@ class HowLongToBeat
             'Accept: */*',
             'Referer: https://howlongtobeat.com/'
         ];
-        $this->apiEndpoint = $this->findApiEndpoint();
+
+        // Find both the API path and endpoint from the script
+        $scriptData = $this->findApiData();
+        $this->apiPath = $scriptData['path'];
+        $this->apiEndpoint = $scriptData['endpoint'];
     }
 
     /**
-     * Find the API endpoint from the main page script
+     * Find the API path and endpoint from the main page script
      *
-     * @return string
+     * @return array
      */
-    private function findApiEndpoint(): string
+    private function findApiData(): array
     {
         $html = $this->get(self::BASE_URL);
 
@@ -46,6 +51,26 @@ class HowLongToBeat
         $scriptUrl = self::BASE_URL . ltrim($matches[1][0], '/');
         $scriptContent = $this->get($scriptUrl);
 
+        // Extract API endpoint (key)
+        $apiEndpoint = $this->extractApiEndpoint($scriptContent);
+
+        // Extract API path
+        $apiPath = $this->extractApiPath($scriptContent, $apiEndpoint);
+
+        return [
+            'path' => $apiPath,
+            'endpoint' => $apiEndpoint
+        ];
+    }
+
+    /**
+     * Extract the API endpoint (key) from the script content
+     *
+     * @param string $scriptContent
+     * @return string
+     */
+    private function extractApiEndpoint(string $scriptContent): string
+    {
         // Try to find the API key in the format: fetch("/api/s/".concat("X").concat("Y")
         if (preg_match('/fetch\(\s*["\']\/api\/\w+\/["\']((?:\.concat\(["\'][^"\']*["\']\))+)/', $scriptContent, $matches)) {
             // Extract the concatenated strings
@@ -61,6 +86,38 @@ class HowLongToBeat
         }
 
         throw new HowLongToBeatException("Could not find API endpoint");
+    }
+
+    /**
+     * Extract the API path from the script content
+     *
+     * @param string $scriptContent
+     * @param string $apiEndpoint
+     * @return string
+     */
+    private function extractApiPath(string $scriptContent, string $apiEndpoint): string
+    {
+        // Try to find the pattern: fetch("/api/ouch/".concat("X").concat("Y"), ...
+        if (preg_match_all('/fetch\(\s*["\'](\/api\/[^"\'\/]*)\/["\']((?:\s*\.concat\(\s*["\'](.*?)["\']\s*\))+)\s*,/', $scriptContent, $matches, PREG_SET_ORDER)) {
+            foreach ($matches as $match) {
+                $path = $match[1];
+                $concatCalls = $match[2];
+
+                // Extract all concatenated strings
+                preg_match_all('/\.concat\(\s*["\'](.*?)["\']\s*\)/', $concatCalls, $concatMatches);
+                if (!empty($concatMatches[1])) {
+                    $concatenatedStr = implode('', $concatMatches[1]);
+
+                    // Check if the concatenated string matches the known API endpoint
+                    if ($concatenatedStr === $apiEndpoint) {
+                        return $path;
+                    }
+                }
+            }
+        }
+
+        // Fallback to default path if we couldn't find it dynamically
+        return '/api/s';
     }
 
     /**
@@ -143,7 +200,7 @@ class HowLongToBeat
         }
 
         try {
-            $data = $this->post(self::BASE_URL . 'api/s/' . $this->apiEndpoint, [
+            $data = $this->post(self::BASE_URL . ltrim($this->apiPath, '/') . '/' . $this->apiEndpoint, [
                 'searchType' => 'games',
                 'searchTerms' => explode(' ', $query),
                 'searchPage' => $page,
@@ -221,7 +278,7 @@ class HowLongToBeat
         $gameTitle = $this->getGameTitle($gameId);
 
         try {
-            $data = $this->post(self::BASE_URL . 'api/s/' . $this->apiEndpoint, [
+            $data = $this->post(self::BASE_URL . ltrim($this->apiPath, '/') . '/' . $this->apiEndpoint, [
                 'searchType' => 'games',
                 'searchTerms' => [$gameTitle],
                 'searchPage' => 1,
