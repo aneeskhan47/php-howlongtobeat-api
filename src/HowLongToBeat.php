@@ -269,73 +269,46 @@ class HowLongToBeat
      * @param string|int $gameId
      * @return Game
      */
-    public function searchById($gameId): Game
+    public function searchById($gameId)
     {
         if (is_string($gameId)) {
             $gameId = intval($gameId);
         }
 
-        $gameTitle = $this->getGameTitle($gameId);
+        $gameData = $this->getGameDataById($gameId);
 
-        try {
-            $data = $this->post(self::BASE_URL . ltrim($this->apiPath, '/') . '/' . $this->apiEndpoint, [
-                'searchType' => 'games',
-                'searchTerms' => [$gameTitle],
-                'searchPage' => 1,
-                'size' => 1,
-                'searchOptions' => [
-                    'games' => [
-                        'userId' => 0,
-                        'platform' => '',
-                        'sortCategory' => 'popular',
-                        'rangeCategory' => 'main',
-                        'rangeTime' => [
-                            'min' => null,
-                            'max' => null,
-                        ],
-                        'gameplay' => [
-                            'perspective' => '',
-                            'flow' => '',
-                            'genre' => '',
-                            'difficulty' => '',
-                        ],
-                        'rangeYear' => [
-                            'min' => '',
-                            'max' => '',
-                        ],
-                        'modifier' => '',
-                    ],
-                    'users' => [
-                        'sortCategory' => 'postcount',
-                    ],
-                    'lists' => [
-                        'sortCategory' => 'follows',
-                    ],
-                    'filter' => '',
-                    'sort' => 0,
-                    'randomizer' => 0,
-                ],
-                'useCache' => true,
-            ]);
-
-            if (empty($data['data'][0])) {
-                throw new HowLongToBeatException("Game not found with ID: {$gameId}");
-            }
-
-            $gameData = $data['data'][0];
-
-            return new Game([
-                'id' => $gameData['game_id'] ?? 0,
-                'name' => $gameData['game_name'] ?? '',
-                'image_url' => $gameData['game_image'] ? "https://howlongtobeat.com/games/" . $gameData['game_image'] : null,
-                'main_story_time' => $gameData['comp_main'] ?? null,
-                'main_extra_time' => $gameData['comp_plus'] ?? null,
-                'completionist_time' => $gameData['comp_100'] ?? null,
-                'all_styles_time' => $gameData['comp_all'] ?? null,
-            ]);
-        } catch (\Exception $e) {
-            throw new HowLongToBeatException("Error getting game details: " . $e->getMessage());
+        if (!$gameData) {
+            throw new HowLongToBeatException("Game not found with ID: {$gameId}");
         }
+
+        return new Game([
+            'id' => $gameData['game_id'] ?? 0,
+            'name' => $gameData['game_name'] ?? '',
+            'image_url' => $gameData['game_image'] ? "https://howlongtobeat.com/games/" . $gameData['game_image'] : null,
+            'main_story_time' => $gameData['comp_main'] ?? null,
+            'main_extra_time' => $gameData['comp_plus'] ?? null,
+            'completionist_time' => $gameData['comp_100'] ?? null,
+            'all_styles_time' => $gameData['comp_all'] ?? null,
+        ]);
+    }
+
+    /**
+     * Get the game data by its ID.
+     *
+     * @param int $gameId
+     * @return array|null
+     */
+    private function getGameDataById(int $gameId)
+    {
+        $html = $this->get(self::BASE_URL . 'game/' . $gameId);
+
+        if (preg_match('/<script id="__NEXT_DATA__" type="application\/json">(.+?)<\/script>/', $html, $matches)) {
+            $json = json_decode($matches[1], true);
+
+            return $json['props']['pageProps']['game']['data']['game'][0] ?? null;
+        }
+
+        throw new HowLongToBeatException("Unable to extract game JSON data for ID {$gameId}");
     }
 
     /**
@@ -344,7 +317,7 @@ class HowLongToBeat
      * @param int $gameId
      * @return string
      */
-    private function getGameTitle(int $gameId): string
+    private function getGameTitle(int $gameId)
     {
         $html = $this->get(self::BASE_URL . 'game/' . $gameId);
 
