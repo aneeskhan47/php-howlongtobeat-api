@@ -19,9 +19,9 @@ try {
 
     echo "Game: " . $results->name . "\n";
     echo "Image: " . $results->image_url . "\n";
-    echo "Main Story: " . $results->main_story_time . "\n";
-    echo "Main + Extra: " . $results->main_extra_time . "\n";
-    echo "Completionist: " . $results->completionist_time . "\n";
+    echo "Main Story: " . $results->main_story_time_formatted . "\n";
+    echo "Main + Extra: " . $results->main_extra_time_formatted . "\n";
+    echo "Completionist: " . $results->completionist_time_formatted . "\n";
     echo "------------------------\n";
 } catch (Exception $e) {
     echo "Error: " . $e->getMessage();

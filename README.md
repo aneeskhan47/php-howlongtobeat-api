@@ -43,9 +43,9 @@ try {
     foreach ($results->games as $game) {
         echo "Game: " . $game->name . "\n";
         echo "Image: " . $game->image_url . "\n";
-        echo "Main Story: " . $game->main_story_time . "\n";
-        echo "Main + Extra: " . $game->main_extra_time . "\n";
-        echo "Completionist: " . $game->completionist_time . "\n";
+        echo "Main Story: " . $game->main_story_time_formatted . "\n";
+        echo "Main + Extra: " . $game->main_extra_time_formatted . "\n";
+        echo "Completionist: " . $game->completionist_time_formatted . "\n";
         echo "------------------------\n";
     }
 } catch (Exception $e) {
@@ -68,9 +68,9 @@ $game = $hltb->searchById(26286);
 
 echo "Game: " . $game->name . "\n";
 echo "Image: " . $game->image_url . "\n";
-echo "Main Story: " . $game->main_story_time . "\n";
-echo "Main + Extra: " . $game->main_extra_time . "\n";
-echo "Completionist: " . $game->completionist_time . "\n";
+echo "Main Story: " . $game->main_story_time_formatted . "\n";
+echo "Main + Extra: " . $game->main_extra_time_formatted . "\n";
+echo "Completionist: " . $game->completionist_time_formatted . "\n";
 echo "------------------------\n";
 ```
 

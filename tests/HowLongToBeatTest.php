@@ -68,6 +68,10 @@ class HowLongToBeatTest extends TestCase
         $this->assertObjectHasProperty('main_extra_time', $game);
         $this->assertObjectHasProperty('completionist_time', $game);
         $this->assertObjectHasProperty('all_styles_time', $game);
+        $this->assertObjectHasProperty('main_story_time_formatted', $game);
+        $this->assertObjectHasProperty('main_extra_time_formatted', $game);
+        $this->assertObjectHasProperty('completionist_time_formatted', $game);
+        $this->assertObjectHasProperty('all_styles_time_formatted', $game);
     }
 
     public function testSearchResultPagination()
